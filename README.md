@@ -1,58 +1,191 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Persiapan
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Matakuliah Pemrograman Berorientasi Objek 2 akan menggunakan Laravel, berikut adalah beberapa file yang perlu dipersiapkan:
 
-## About Laravel
+- Download [XAMPP](https://www.apachefriends.org/download.html) atau [Laragon](https://laragon.org/download).
+- Download [NodeJS](https://nodejs.org/en/download). Boleh yang current maupun yang LTS.
+- Download [composer](https://getcomposer.org/download/).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Pada perintah ini dicontohkan kelas yang mengerjakan adalah kelas `5A`. Jalankan perintah berikut untuk membuat project Laravel, sesuaikan dengan kelas masing-masing.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer create-project laravel/laravel laravel5A
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Buka file `.env` pada root proyek Laravel.
 
-## Contributing
+- Ganti `APP_NAME=Laravel` menjadi `APP_NAME=SIMTIKUM`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Hapus tanda komentar `#` pada baris-baris konfigurasi database di bawahnya.
 
-## Code of Conduct
+- Ganti `DB_DATABASE` menjadi `db_pbo2_5A`, lalu simpan file.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Buka `phpMyAdmin` → New → buat database `db_pbo2_5A`.
 
-## Security Vulnerabilities
+                                                                                
+Jalankan perintah berikut untuk menghubungkan ataupun membuat database jika belum dibuat:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan migrate
+```
 
-## License
+atau jika ingin mengulang pembuatan database
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan migrate:fresh
+```
+
+## Membuat Paket
+
+Jalankan perintah berikut untuk membuat model, migration, controller (resource), dan seeder
+
+```bash
+php artisan make:model Periode -mcrs
+```
+
+Resource disini dimaksudkan untuk membuat method resource yang berisikan index, create, store, show, edit, update, dan destroy pada controller.
+
+### Mengubah Model
+
+Pada file model pada `app/Models/Periode` yang dihasilkan, tuliskan:
+
+```php
+class Periode extends Model
+{
+    protected $table = 'periode';
+    protected $guarded = [];
+}
+```
+
+Disini dinyatakan nama tabel karena kita menggunakan tabel dengan Bahasa Indonesia. Sedangkan perintah `guarded = []` digunakan agar seluruh kolom bisa kita kelola.
+
+### Mengubah Migration
+
+Pada file `database/migrations/~_create_periodes_table.php` yang dihasilkan, perhatikan function up:
+
+```php
+public function up(): void
+{
+    Schema::create('periode', function (Blueprint $table) {
+        $table->id();
+        $table->string('periode');
+        $table->string('singkatan');
+        $table->boolean('status')->default(false);
+        $table->timestamps();
+    });
+}
+```
+
+Pastikan mengganti `periodes` menjadi `periode` dan tambahkan field yang akan digunakan.
+
+Ganti juga pada function down: 
+
+```php
+public function down(): void
+{
+    Schema::dropIfExists('periode');
+}
+```
+
+### Mengubah Seeder
+
+Tambahkan pada file seeder `database/seeders/PeriodeSeeder`:
+
+```php
+use App\Models\Periode;
+```
+
+Isi function `run`. Ada beberapa contoh pembuatan seeder diantaranya yang `pertama`:
+
+```php
+Periode::create([
+    'periode' => 'GANJIL 2025/2026',
+    'singkatan' => '251',
+]);
+Periode::create([
+    'periode' => 'GENAP 2025/2026',
+    'singkatan' => '252',
+]);
+Periode::create([
+    'periode' => 'GANJIL 2026/2027',
+    'singkatan' => '261',
+]);
+Periode::create([
+    'periode' => 'GENAP 2026/2027',
+    'singkatan' => '262',
+]);
+```
+
+`atau` yang kedua:
+
+```php
+Periode::insert([
+    ['periode' => 'GANJIL 2025/2026', 'singkatan' => '251'],
+    ['periode' => 'GENAP 2025/2026', 'singkatan' => '252'],
+    ['periode' => 'GANJIL 2026/2027', 'singkatan' => '261'],
+    ['periode' => 'GENAP 2026/2027', 'singkatan' => '262'],
+]);
+```
+
+`atau` yang ketiga:
+
+```php
+$now = now();
+
+$data = collect([
+    ['GANJIL 2025/2026', '251'],
+    ['GENAP 2025/2026', '252'],
+    ['GANJIL 2026/2027', '261'],
+    ['GENAP 2026/2027', '262'],
+])->map(fn($item) => [
+    'periode' => $item[0],
+    'singkatan' => $item[1],
+    'created_at' => $now,
+    'updated_at' => $now,
+])->toArray();
+
+Periode::insert($data);
+```
+
+Pilih yang menurut anda paling mudah.
+
+Panggil seeder yang sudah kita buat dalam function run pada file `database/seeders/DatabaseSeeder.php`:
+
+```php
+public function run(): void
+{
+    $this->call(PeriodeSeeder::class);
+}
+```
+
+Jalankan dengan perintah:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+alternatif migration untuk menyertakan seeder bisa menggunakan:
+
+```bash
+php artisan migrate:fresh --seed --seeder=PeriodeSeeder
+```
+atau jika satu seeder saja yang ingin dieksekusi bisa menggunakan:
+
+```bash
+php artisan db:seed --class=PeriodeSeeder
+```
+
+## Mengunduh Template
+
+Pada project ini kita akan menggunakan [AdminLTE](https://adminlte.io). Langkah pertama bisa dilakukan dengan mengunduh template-nya [disini](https://github.com/ColorlibHQ/AdminLTE/releases/download/v4.10.0/admin-lte-v4.10.0.zip). Berikutnya letakkan folder `dist` hasil unduhan tadi di dalam folder `public`.
+
+```text
+laravel5a/
+├── app/
+├── bootstrap/
+├── config/
+├── database/
+├── public/
+│   └── dist/
+└── ...
+```
