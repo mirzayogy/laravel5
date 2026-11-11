@@ -9,7 +9,7 @@
         <main class="app-main">
             <div class="app-content-header">
                 <div class="container-fluid">
-                    @yield('dashboard')
+                    @yield('breadcrumb')
                 </div>
             </div>
             <div class="app-content">

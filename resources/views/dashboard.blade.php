@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('dashboard')
+@section('breadcrumb')
     @include('layouts.components.breadcrumb')
 @endsection
 
